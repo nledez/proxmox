@@ -17,22 +17,23 @@ module Proxmox
       @auth_params ||= begin
         ticket = nil
         csrf_prevention_token = nil
-        @site['access/ticket'].post :username=>@username,
-          :realm=>@realm,
-          :password=>@password do |response, request, result, &block|
-            if response.code == 200
-              data = JSON.parse(response.body)
-              ticket = data['data']['ticket']
-              csrf_prevention_token = data['data']['CSRFPreventionToken']
-              if !ticket.nil?
-                token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
-              end
-              @status = "connected"
-              {:CSRFPreventionToken => csrf_prevention_token, :cookie => token}
-            elsif response.code == 200
-              @status = "error"
+        post_param = { :username=>@username, :realm=>@realm, :password=>@password }
+        @site['access/ticket'].post post_param do |response, request, result, &block|
+          if response.code == 200
+            data = JSON.parse(response.body)
+            ticket = data['data']['ticket']
+            csrf_prevention_token = data['data']['CSRFPreventionToken']
+            if !ticket.nil?
+              token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
             end
-          #
+            @status = "connected"
+            {
+              :CSRFPreventionToken => csrf_prevention_token,
+              :cookie => token
+            }
+          elsif response.code == 200
+            @status = "error"
+          end
         end
       end
     end
