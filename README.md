@@ -1,6 +1,15 @@
 # Proxmox
 
-TODO: Write a gem description
+You need to manage a proxmox host with Ruby? This library is for you.
+
+Inspirated from:
+https://bitbucket.org/jmoratilla/knife-proxmox/ but I would like to have
+the same without chef.
+https://github.com/maxschulze/uv_proxmox but listing some task does not
+work for me. No tests, use ssh.
+
+So I start to create one fully tested (TDD method).
+
 
 ## Installation
 
@@ -18,7 +27,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+At this time check specs to have code samples.
 
 ## Contributing
 
