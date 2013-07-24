@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Proxmox::VERSION
   spec.authors       = ["Nicolas Ledez"]
   spec.email         = ["github@ledez.net"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{A library to drive a Proxmox host}
+  spec.summary       = %q{You need to manage a proxmox host with Ruby? This library is for you.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
