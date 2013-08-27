@@ -75,6 +75,12 @@ module Proxmox
       end
     end
 
+    def openvz_vm_status(vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}/status/current"].get @auth_params do |response, request, result, &block|
+        JSON.parse(response.body)['data']
+      end
+    end
+
     def task_status(upid)
       @site["nodes/#{@node}/tasks/#{URI::encode upid}/status"].get @auth_params do |response, request, result, &block|
         status = JSON.parse(response.body)['data']['status']

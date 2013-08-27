@@ -182,6 +182,29 @@ describe Proxmox do
     @server1.task_status("UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:").should be_eql "running"
   end
 
+  it "should get container status" do
+    # VM Status
+    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/openvz/200/status/current").with(
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":{"maxswap":268435456,"disk":0,"ip":"-","status":"stopped","ha":0,"netout":0,"maxdisk":9.44473296573929e+21,"maxmem":268435456,"uptime":0,"swap":0,"nproc":0,"diskread":0,"cpu":0,"netin":0,"name":"CT200","failcnt":0,"diskwrite":0,"mem":0,"type":"openvz","cpus":1}}'
+      )
+
+    @server1.openvz_vm_status(200).should be_an_instance_of Hash
+    @server1.openvz_vm_status(200)['status'].should be_eql "stopped"
+    @server1.openvz_vm_status(200)['cpus'].should be_eql 1
+  end
+
   it "should get template list" do
     # First template list
     stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/storage/local/content").with(
