@@ -97,6 +97,28 @@ describe Proxmox do
     server2.openvz_get.keys.sort.should be_eql [ '100', '101', '102' ]
   end
 
+  it "should create a container" do
+    stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz").with(
+      :body => "vmid=200&ostemplate=local%3Avztmpl%2Fubuntu-10.04-standard_10.04-4_i386.tar.gz",
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":"UPID:ks311324:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"}'
+      )
+
+    server1 = Proxmox::Proxmox.new("http://localhost:8006/api2/json/", "localhost", "root", "secret", "pam")
+    server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200).should be_eql "UPID:ks311324:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
+  end
+
   it "should get template list" do
     # First template list
     stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/storage/local/content").with(
