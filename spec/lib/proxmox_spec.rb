@@ -138,9 +138,26 @@ describe Proxmox do
       :body => '{"data":{"exitstatus":"OK","status":"stopped","upid":"UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:","node":"localhost","pid":335264,"starttime":1377618713,"user":"root@pam","type":"vzcreate","id":"200","pstart":295611067}}'
     )
 
+    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/task/UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:/status").with(
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":{"status":"running","upid":"UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:","node":"localhost","pid":351706,"starttime":1377625887,"user":"root@pam","type":"vzcreate","id":"200","pstart":296328455}}'
+    )
+
     server1 = Proxmox::Proxmox.new("http://localhost:8006/api2/json/", "localhost", "root", "secret", "pam")
     server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200).should be_eql "UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
-    server1.task_status("UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:").should be_eql "OK:stopped"
+    server1.task_status("UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:").should be_eql "stopped:OK"
+    server1.task_status("UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:").should be_eql "running"
   end
 
   it "should get template list" do

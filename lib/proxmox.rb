@@ -66,9 +66,13 @@ module Proxmox
 
     def task_status(upid)
       @site["nodes/#{@node}/task/#{upid}/status"].get @auth_params do |response, request, result, &block|
-        exitstatus = JSON.parse(response.body)['data']['exitstatus']
         status = JSON.parse(response.body)['data']['status']
-        "#{exitstatus}:#{status}"
+        exitstatus = JSON.parse(response.body)['data']['exitstatus']
+        if exitstatus
+          "#{status}:#{exitstatus}"
+        else
+          "#{status}"
+        end
       end
     end
 
