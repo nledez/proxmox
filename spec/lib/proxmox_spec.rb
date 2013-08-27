@@ -117,7 +117,7 @@ describe Proxmox do
       )
 
     # Status done
-    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/task/UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:/status").with(
+    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/tasks/UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:/status").with(
       :headers => {
         'User-Agent' => 'Ruby',
         'Cookie' => /.*/,
@@ -134,7 +134,7 @@ describe Proxmox do
     )
 
     # Status running
-    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/task/UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:/status").with(
+    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/tasks/UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:/status").with(
       :headers => {
         'User-Agent' => 'Ruby',
         'Cookie' => /.*/,
