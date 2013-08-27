@@ -38,7 +38,7 @@ module Proxmox
       end
     end
 
-    def openvz
+    def openvz_get
       @site["nodes/#{@node}/openvz"].get @auth_params do |response, request, result, &block|
         ve_list = Hash.new
         JSON.parse(response.body)['data'].each do |ve|

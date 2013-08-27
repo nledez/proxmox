@@ -89,12 +89,12 @@ describe Proxmox do
     )
 
     server1 = Proxmox::Proxmox.new("http://localhost:8006/api2/json/", "localhost", "root", "secret", "pam")
-    server1.openvz.should be_an_instance_of Hash
-    server1.openvz.keys.sort.should be_eql [ '100', '101' ]
+    server1.openvz_get.should be_an_instance_of Hash
+    server1.openvz_get.keys.sort.should be_eql [ '100', '101' ]
 
     server2 = Proxmox::Proxmox.new("http://localhost:8006/api2/json/", "otherone", "root", "secret", "pam")
-    server2.openvz.should be_an_instance_of Hash
-    server2.openvz.keys.sort.should be_eql [ '100', '101', '102' ]
+    server2.openvz_get.should be_an_instance_of Hash
+    server2.openvz_get.keys.sort.should be_eql [ '100', '101', '102' ]
   end
 
   it "should get template list" do
