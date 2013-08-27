@@ -64,6 +64,14 @@ module Proxmox
       end
     end
 
+    def task_status(upid)
+      @site["nodes/#{@node}/task/#{upid}/status"].get @auth_params do |response, request, result, &block|
+        exitstatus = JSON.parse(response.body)['data']['exitstatus']
+        status = JSON.parse(response.body)['data']['status']
+        "#{exitstatus}:#{status}"
+      end
+    end
+
     def templates
       @site["nodes/#{@node}/storage/local/content"].get @auth_params do |response, request, result, &block|
         template_list = Hash.new
