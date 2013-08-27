@@ -97,7 +97,7 @@ describe Proxmox do
     server2.openvz_get.keys.sort.should be_eql [ '100', '101', '102' ]
   end
 
-  it "should create a container & get task status" do
+  it "should create a container" do
     # Create VM
     stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz").with(
       :body => "vmid=200&ostemplate=local%3Avztmpl%2Fubuntu-10.04-standard_10.04-4_i386.tar.gz",
@@ -116,6 +116,11 @@ describe Proxmox do
       :body => '{"data":"UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"}'
       )
 
+    #Create the vm
+    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200).should be_eql "UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
+  end
+
+  it "should get task status" do
     # Status done
     stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/tasks/UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:/status").with(
       :headers => {
@@ -149,9 +154,6 @@ describe Proxmox do
       },
       :body => '{"data":{"status":"running","upid":"UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:","node":"localhost","pid":351706,"starttime":1377625887,"user":"root@pam","type":"vzcreate","id":"200","pstart":296328455}}'
     )
-
-    #Create the vm
-    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200).should be_eql "UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
 
     # Get status
     @server1.task_status("UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:").should be_eql "stopped:OK"
