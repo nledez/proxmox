@@ -64,6 +64,17 @@ module Proxmox
       end
     end
 
+    def openvz_delete(vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}"].delete @auth_params do |response, request, result, &block|
+        if (response.code == 200) then
+          result = "OK"
+        else
+          result = "NOK: error code = " + response.code.to_s
+        end
+        JSON.parse(response.body)['data']
+      end
+    end
+
     def task_status(upid)
       @site["nodes/#{@node}/tasks/#{URI::encode upid}/status"].get @auth_params do |response, request, result, &block|
         status = JSON.parse(response.body)['data']['status']
