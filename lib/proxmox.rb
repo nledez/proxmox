@@ -89,6 +89,18 @@ module Proxmox
       end
     end
 
+    def openvz_vm_action_post(action, vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}/status/#{action}"].post "", @auth_params do |response, request, result, &block|
+        JSON.parse(response.body)['data']
+      end
+    end
+
+    def openvz_vm_action_get(action, vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}/status/#{action}"].get @auth_params do |response, request, result, &block|
+        JSON.parse(response.body)['data']
+      end
+    end
+
     def openvz_delete(vmid)
       @site["nodes/#{@node}/openvz/#{vmid}"].delete @auth_params do |response, request, result, &block|
         check_response response
@@ -96,27 +108,19 @@ module Proxmox
     end
 
     def openvz_vm_status(vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}/status/current"].get @auth_params do |response, request, result, &block|
-        JSON.parse(response.body)['data']
-      end
-    end
-
-    def openvz_vm_action(action, vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}/status/#{action}"].post "", @auth_params do |response, request, result, &block|
-        JSON.parse(response.body)['data']
-      end
+      openvz_vm_action_get("current", vmid)
     end
 
     def openvz_vm_start(vmid)
-      openvz_vm_action("start", vmid)
+      openvz_vm_action_post("start", vmid)
     end
 
     def openvz_vm_stop(vmid)
-      openvz_vm_action("stop", vmid)
+      openvz_vm_action_post("stop", vmid)
     end
 
     def openvz_vm_shutdown(vmid)
-      openvz_vm_action("shutdown", vmid)
+      openvz_vm_action_post("shutdown", vmid)
     end
 
     def openvz_vm_config(vmid)
