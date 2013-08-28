@@ -39,7 +39,7 @@ module Proxmox
     end
 
     def task_status(upid)
-      data = openvz_vm_action_get "nodes/#{@node}/tasks/#{URI::encode upid}/status"
+      data = http_action_get "nodes/#{@node}/tasks/#{URI::encode upid}/status"
       status = data['status']
       exitstatus = data['exitstatus']
       if exitstatus
@@ -50,7 +50,7 @@ module Proxmox
     end
 
     def templates
-      data = openvz_vm_action_get "nodes/#{@node}/storage/local/content"
+      data = http_action_get "nodes/#{@node}/storage/local/content"
       template_list = Hash.new
       data.each do |ve|
         name = ve['volid'].gsub(/^local:vztmpl\/(.*).tar.gz$/, '\1')
@@ -60,12 +60,44 @@ module Proxmox
     end
 
     def openvz_get
-      data = openvz_vm_action_get "nodes/#{@node}/openvz"
+      data = http_action_get "nodes/#{@node}/openvz"
       ve_list = Hash.new
       data.each do |ve|
         ve_list[ve['vmid']] = ve
       end
       ve_list
+    end
+
+    def openvz_post(ostemplate, vmid, config = {})
+      config['vmid'] = vmid
+      config['ostemplate'] = "local%3Avztmpl%2F#{ostemplate}.tar.gz"
+      vm_definition = config.to_a.map { |v| v.join '=' }.join '&'
+
+      http_action_post("nodes/#{@node}/openvz", vm_definition)
+    end
+
+    def openvz_delete(vmid)
+      http_action_delete "nodes/#{@node}/openvz/#{vmid}"
+    end
+
+    def openvz_vm_status(vmid)
+      http_action_get "nodes/#{@node}/openvz/#{vmid}/status/current"
+    end
+
+    def openvz_vm_start(vmid)
+      http_action_post "nodes/#{@node}/openvz/#{vmid}/status/start"
+    end
+
+    def openvz_vm_stop(vmid)
+      http_action_post "nodes/#{@node}/openvz/#{vmid}/status/stop"
+    end
+
+    def openvz_vm_shutdown(vmid)
+      http_action_post "nodes/#{@node}/openvz/#{vmid}/status/shutdown"
+    end
+
+    def openvz_vm_config(vmid)
+      http_action_get "nodes/#{@node}/openvz/#{vmid}/config"
     end
 
     def check_response(response)
@@ -76,54 +108,22 @@ module Proxmox
       end
     end
 
-    def openvz_vm_action_post(url, data = "")
+    def http_action_post(url, data = "")
       @site[url].post data, @auth_params do |response, request, result, &block|
         check_response response
       end
     end
 
-    def openvz_vm_action_get(url)
+    def http_action_get(url)
       @site[url].get @auth_params do |response, request, result, &block|
         check_response response
       end
     end
 
-    def openvz_vm_action_delete(url)
+    def http_action_delete(url)
       @site[url].delete @auth_params do |response, request, result, &block|
         check_response response
       end
-    end
-
-    def openvz_post(ostemplate, vmid, config = {})
-      config['vmid'] = vmid
-      config['ostemplate'] = "local%3Avztmpl%2F#{ostemplate}.tar.gz"
-      vm_definition = config.to_a.map { |v| v.join '=' }.join '&'
-
-      openvz_vm_action_post("nodes/#{@node}/openvz", vm_definition)
-    end
-
-    def openvz_delete(vmid)
-      openvz_vm_action_delete "nodes/#{@node}/openvz/#{vmid}"
-    end
-
-    def openvz_vm_status(vmid)
-      openvz_vm_action_get "nodes/#{@node}/openvz/#{vmid}/status/current"
-    end
-
-    def openvz_vm_start(vmid)
-      openvz_vm_action_post "nodes/#{@node}/openvz/#{vmid}/status/start"
-    end
-
-    def openvz_vm_stop(vmid)
-      openvz_vm_action_post "nodes/#{@node}/openvz/#{vmid}/status/stop"
-    end
-
-    def openvz_vm_shutdown(vmid)
-      openvz_vm_action_post "nodes/#{@node}/openvz/#{vmid}/status/shutdown"
-    end
-
-    def openvz_vm_config(vmid)
-      openvz_vm_action_get "nodes/#{@node}/openvz/#{vmid}/config"
     end
   end
 end
