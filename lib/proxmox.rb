@@ -38,6 +38,18 @@ module Proxmox
       end
     end
 
+    def task_status(upid)
+      @site["nodes/#{@node}/tasks/#{URI::encode upid}/status"].get @auth_params do |response, request, result, &block|
+        status = JSON.parse(response.body)['data']['status']
+        exitstatus = JSON.parse(response.body)['data']['exitstatus']
+        if exitstatus
+          "#{status}:#{exitstatus}"
+        else
+          "#{status}"
+        end
+      end
+    end
+
     def templates
       @site["nodes/#{@node}/storage/local/content"].get @auth_params do |response, request, result, &block|
         template_list = Hash.new
@@ -105,18 +117,6 @@ module Proxmox
     def openvz_vm_shutdown(vmid)
       @site["nodes/#{@node}/openvz/#{vmid}/status/shutdown"].post "", @auth_params do |response, request, result, &block|
         JSON.parse(response.body)['data']
-      end
-    end
-
-    def task_status(upid)
-      @site["nodes/#{@node}/tasks/#{URI::encode upid}/status"].get @auth_params do |response, request, result, &block|
-        status = JSON.parse(response.body)['data']['status']
-        exitstatus = JSON.parse(response.body)['data']['exitstatus']
-        if exitstatus
-          "#{status}:#{exitstatus}"
-        else
-          "#{status}"
-        end
       end
     end
   end
