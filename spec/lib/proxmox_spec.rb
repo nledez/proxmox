@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'webmock/rspec'
+require 'proxmox'
 
 describe Proxmox do
   before(:each) do
