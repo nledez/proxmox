@@ -115,7 +115,7 @@ describe Proxmox do
         :content_type => "application/json;charset=UTF-8",
       },
       :body => '{"data":"UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"}'
-      )
+    )
 
     #Create the vm
     @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200).should be_eql "UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
@@ -137,7 +137,7 @@ describe Proxmox do
         :content_type => "application/json;charset=UTF-8",
       },
       :body => '{"data":"UPID:localhost:0005C1EB:11BAA4EB:521D12B8:vzdestroy:200:root@pam:"}'
-      )
+    )
 
     # Delete the vm
     @server1.openvz_delete(200).should be_eql 'UPID:localhost:0005C1EB:11BAA4EB:521D12B8:vzdestroy:200:root@pam:'
@@ -199,7 +199,7 @@ describe Proxmox do
         :content_type => "application/json;charset=UTF-8",
       },
       :body => '{"data":{"maxswap":268435456,"disk":0,"ip":"-","status":"stopped","ha":0,"netout":0,"maxdisk":9.44473296573929e+21,"maxmem":268435456,"uptime":0,"swap":0,"nproc":0,"diskread":0,"cpu":0,"netin":0,"name":"CT200","failcnt":0,"diskwrite":0,"mem":0,"type":"openvz","cpus":1}}'
-      )
+    )
 
     @server1.openvz_vm_status(200).should be_an_instance_of Hash
     @server1.openvz_vm_status(200)['status'].should be_eql "stopped"
@@ -222,7 +222,7 @@ describe Proxmox do
         :content_type => "application/json;charset=UTF-8",
       },
       :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstart:200:root@pam:"}'
-      )
+    )
 
     stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz/200/status/stop").with(
       :headers => {
@@ -238,7 +238,7 @@ describe Proxmox do
         :content_type => "application/json;charset=UTF-8",
       },
       :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:"}'
-      )
+    )
 
     stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz/200/status/shutdown").with(
       :headers => {
@@ -254,7 +254,7 @@ describe Proxmox do
         :content_type => "application/json;charset=UTF-8",
       },
       :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"}'
-      )
+    )
 
     @server1.openvz_vm_start(200)
     @server1.openvz_vm_stop(200)
