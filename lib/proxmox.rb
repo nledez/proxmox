@@ -18,26 +18,28 @@ module Proxmox
     end
 
     def create_ticket
-        ticket = nil
-        csrf_prevention_token = nil
         post_param = { :username=>@username, :realm=>@realm, :password=>@password }
         @site['access/ticket'].post post_param do |response, request, result, &block|
           if response.code == 200
-            data = JSON.parse(response.body)
-            ticket = data['data']['ticket']
-            csrf_prevention_token = data['data']['CSRFPreventionToken']
-            if !ticket.nil?
-              token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
-            end
-            @status = "connected"
-            {
-              :CSRFPreventionToken => csrf_prevention_token,
-              :cookie => token
-            }
+            extract_ticket response
           else
             @status = "error"
           end
         end
+    end
+
+    def extract_ticket(response)
+      data = JSON.parse(response.body)
+      ticket = data['data']['ticket']
+      csrf_prevention_token = data['data']['CSRFPreventionToken']
+      unless ticket.nil?
+        token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
+      end
+      @status = "connected"
+      {
+        :CSRFPreventionToken => csrf_prevention_token,
+        :cookie => token
+      }
     end
 
     def task_status(upid)
