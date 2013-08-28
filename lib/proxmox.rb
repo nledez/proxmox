@@ -39,36 +39,33 @@ module Proxmox
     end
 
     def task_status(upid)
-      @site["nodes/#{@node}/tasks/#{URI::encode upid}/status"].get @auth_params do |response, request, result, &block|
-        status = JSON.parse(response.body)['data']['status']
-        exitstatus = JSON.parse(response.body)['data']['exitstatus']
-        if exitstatus
-          "#{status}:#{exitstatus}"
-        else
-          "#{status}"
-        end
+      data = openvz_vm_action_get "nodes/#{@node}/tasks/#{URI::encode upid}/status"
+      status = data['status']
+      exitstatus = data['exitstatus']
+      if exitstatus
+        "#{status}:#{exitstatus}"
+      else
+        "#{status}"
       end
     end
 
     def templates
-      @site["nodes/#{@node}/storage/local/content"].get @auth_params do |response, request, result, &block|
-        template_list = Hash.new
-        JSON.parse(response.body)['data'].each do |ve|
-          name = ve['volid'].gsub(/^local:vztmpl\/(.*).tar.gz$/, '\1')
-          template_list[name] = ve
-        end
-        template_list
+      data = openvz_vm_action_get "nodes/#{@node}/storage/local/content"
+      template_list = Hash.new
+      data.each do |ve|
+        name = ve['volid'].gsub(/^local:vztmpl\/(.*).tar.gz$/, '\1')
+        template_list[name] = ve
       end
+      template_list
     end
 
     def openvz_get
-      @site["nodes/#{@node}/openvz"].get @auth_params do |response, request, result, &block|
-        ve_list = Hash.new
-        JSON.parse(response.body)['data'].each do |ve|
-          ve_list[ve['vmid']] = ve
-        end
-        ve_list
+      data = openvz_vm_action_get "nodes/#{@node}/openvz"
+      ve_list = Hash.new
+      data.each do |ve|
+        ve_list[ve['vmid']] = ve
       end
+      ve_list
     end
 
     def check_response(response)
@@ -79,18 +76,8 @@ module Proxmox
       end
     end
 
-    def openvz_post(ostemplate, vmid, config = {})
-      config['vmid'] = vmid
-      config['ostemplate'] = "local%3Avztmpl%2F#{ostemplate}.tar.gz"
-      vm_definition = config.to_a.map { |v| v.join '=' }.join '&'
-
-      @site["nodes/#{@node}/openvz"].post "#{vm_definition}", @auth_params do |response, request, result, &block|
-        check_response response
-      end
-    end
-
-    def openvz_vm_action_post(url)
-      @site[url].post "", @auth_params do |response, request, result, &block|
+    def openvz_vm_action_post(url, data = "")
+      @site[url].post data, @auth_params do |response, request, result, &block|
         check_response response
       end
     end
@@ -105,6 +92,14 @@ module Proxmox
       @site[url].delete @auth_params do |response, request, result, &block|
         check_response response
       end
+    end
+
+    def openvz_post(ostemplate, vmid, config = {})
+      config['vmid'] = vmid
+      config['ostemplate'] = "local%3Avztmpl%2F#{ostemplate}.tar.gz"
+      vm_definition = config.to_a.map { |v| v.join '=' }.join '&'
+
+      openvz_vm_action_post("nodes/#{@node}/openvz", vm_definition)
     end
 
     def openvz_delete(vmid)
