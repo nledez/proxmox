@@ -71,27 +71,27 @@ module Proxmox
       end
     end
 
+    def check_response(response)
+      if (response.code == 200) then
+        JSON.parse(response.body)['data']
+      else
+        "NOK: error code = " + response.code.to_s
+      end
+    end
+
     def openvz_post(ostemplate, vmid, config = {})
       config['vmid'] = vmid
       config['ostemplate'] = "local%3Avztmpl%2F#{ostemplate}.tar.gz"
       vm_definition = config.to_a.map { |v| v.join '=' }.join '&'
 
       @site["nodes/#{@node}/openvz"].post "#{vm_definition}", @auth_params do |response, request, result, &block|
-        if (response.code == 200) then
-          JSON.parse(response.body)['data']
-        else
-          "NOK: error code = " + response.code.to_s
-        end
+        check_response response
       end
     end
 
     def openvz_delete(vmid)
       @site["nodes/#{@node}/openvz/#{vmid}"].delete @auth_params do |response, request, result, &block|
-        if (response.code == 200) then
-          JSON.parse(response.body)['data']
-        else
-          "NOK: error code = " + response.code.to_s
-        end
+        check_response response
       end
     end
 
@@ -101,22 +101,22 @@ module Proxmox
       end
     end
 
-    def openvz_vm_start(vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}/status/start"].post "", @auth_params do |response, request, result, &block|
+    def openvz_vm_action(action, vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}/status/#{action}"].post "", @auth_params do |response, request, result, &block|
         JSON.parse(response.body)['data']
       end
+    end
+
+    def openvz_vm_start(vmid)
+      openvz_vm_action("start", vmid)
     end
 
     def openvz_vm_stop(vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}/status/stop"].post "", @auth_params do |response, request, result, &block|
-        JSON.parse(response.body)['data']
-      end
+      openvz_vm_action("stop", vmid)
     end
 
     def openvz_vm_shutdown(vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}/status/shutdown"].post "", @auth_params do |response, request, result, &block|
-        JSON.parse(response.body)['data']
-      end
+      openvz_vm_action("shutdown", vmid)
     end
 
     def openvz_vm_config(vmid)
