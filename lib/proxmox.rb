@@ -71,11 +71,10 @@ module Proxmox
       end
     end
 
-    def openvz_post(ostemplate, vmid)
-      config = Array.new
-      config.push "vmid=#{vmid}"
-      config.push "ostemplate=local%3Avztmpl%2F#{ostemplate}.tar.gz"
-      vm_definition = config.join '&'
+    def openvz_post(ostemplate, vmid, config = {})
+      config['vmid'] = vmid
+      config['ostemplate'] = "local%3Avztmpl%2F#{ostemplate}.tar.gz"
+      vm_definition = config.to_a.map { |v| v.join '=' }.join '&'
 
       @site["nodes/#{@node}/openvz"].post "#{vm_definition}", @auth_params do |response, request, result, &block|
         if (response.code == 200) then

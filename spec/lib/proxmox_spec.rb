@@ -180,7 +180,24 @@ describe Proxmox do
     )
 
     stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz").with(
-      :body => "vmid=201&ostemplate=local%3Avztmpl%2Fubuntu-10.04-standard_10.04-4_i386.tar.gz",
+      :body => "hostname=vm1.domain.com&password=secret&memory=512&swap=512&disk=4&vmid=203&ostemplate=local%3Avztmpl%2Fubuntu-10.04-standard_10.04-4_i386.tar.gz",
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":"UPID:localhost:00051DA0:119EAABC:521CCB19:vzcreate:203:root@pam:"}'
+    )
+
+    stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz").with(
+      :body => "vmid=204&ostemplate=local%3Avztmpl%2Fubuntu-10.04-standard_10.04-4_i386.tar.gz",
       :headers => {
         'User-Agent' => 'Ruby',
         'Cookie' => /.*/,
@@ -198,7 +215,8 @@ describe Proxmox do
 
     #Create the vm
     @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200).should be_eql "UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
-    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 201).should be_eql "NOK: error code = 500"
+    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 203, { 'hostname' => 'vm1.domain.com', 'password' => 'secret', 'memory' => 512, 'swap' => 512, 'disk' => 4 }).should be_eql "UPID:localhost:00051DA0:119EAABC:521CCB19:vzcreate:203:root@pam:"
+    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 204).should be_eql "NOK: error code = 500"
   end
 
   it "should delete openvz container" do
