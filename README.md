@@ -33,7 +33,44 @@ Or install it yourself as:
 
 ## Usage
 
-At this time check specs to have code samples.
+require 'awesome_print'
+require 'proxmox'
+
+def wait_status(server1, task)
+  puts task
+  while server1.task_status(task) == "running"
+    puts '.'
+    sleep 1
+  end
+
+  puts server1.task_status(task)
+end
+
+server1 =
+Proxmox::Proxmox.new("https://the-proxmox-server:8006/api2/json/",
+"node", "root", "secret", "pam")
+ap server1.templates
+
+vm1 = server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200)
+wait_status(server1, vm1)
+
+ap server1.openvz_vm_status(200)
+vm1 = server1.openvz_vm_start(200)
+begin
+  wait_status(server1, vm1)
+rescue
+end
+sleep 5
+ap server1.openvz_vm_shutdown(200)
+begin
+  wait_status(server1, vm1)
+rescue
+end
+sleep 5
+ap server1.openvz_vm_status(200)
+
+vm1 = server1.openvz_delete(200)
+wait_status(server1, vm1)
 
 ## Contributing
 
