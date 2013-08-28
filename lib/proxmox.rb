@@ -119,5 +119,11 @@ module Proxmox
         JSON.parse(response.body)['data']
       end
     end
+
+    def openvz_vm_config(vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}/config"].get @auth_params do |response, request, result, &block|
+        JSON.parse(response.body)['data']
+      end
+    end
   end
 end

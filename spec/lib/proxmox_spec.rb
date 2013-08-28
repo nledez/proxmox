@@ -317,4 +317,27 @@ describe Proxmox do
     @server1.openvz_vm_stop(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:"
     @server1.openvz_vm_shutdown(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"
   end
+
+  it "should get container config" do
+    # VM config
+    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/openvz/200/config").with(
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":{"quotaugidlimit":0,"disk":0,"ostemplate":"ubuntu-10.04-standard_10.04-4_i386.tar.gz","nameserver":"127.0.0.1 192.168.1.1","memory":256,"searchdomain":"domain.com","onboot":0,"cpuunits":1000,"swap":256,"quotatime":0,"digest":"5a6f4052d559d3ecc89c849214f482217018a07e","cpus":1,"storage":"local"}}'
+    )
+
+    @server1.openvz_vm_config(200).should be_an_instance_of Hash
+    @server1.openvz_vm_config(200)['searchdomain'].should be_eql "domain.com"
+    @server1.openvz_vm_config(200)['ostemplate'].should be_eql "ubuntu-10.04-standard_10.04-4_i386.tar.gz"
+  end
 end
