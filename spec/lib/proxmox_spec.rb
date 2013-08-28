@@ -205,6 +205,61 @@ describe Proxmox do
     @server1.openvz_vm_status(200)['cpus'].should be_eql 1
   end
 
+  it "should start & stop vm" do
+    # VM Status
+    stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz/200/status/start").with(
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstart:200:root@pam:"}'
+      )
+
+    stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz/200/status/stop").with(
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:"}'
+      )
+
+    stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz/200/status/shutdown").with(
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"}'
+      )
+
+    @server1.openvz_vm_start(200)
+    @server1.openvz_vm_stop(200)
+    @server1.openvz_vm_shutdown(200)
+  end
+
   it "should get template list" do
     # First template list
     stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/storage/local/content").with(

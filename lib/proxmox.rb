@@ -81,6 +81,24 @@ module Proxmox
       end
     end
 
+    def openvz_vm_start(vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}/status/start"].post "", @auth_params do |response, request, result, &block|
+        JSON.parse(response.body)['data']
+      end
+    end
+
+    def openvz_vm_stop(vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}/status/stop"].post "", @auth_params do |response, request, result, &block|
+        JSON.parse(response.body)['data']
+      end
+    end
+
+    def openvz_vm_shutdown(vmid)
+      @site["nodes/#{@node}/openvz/#{vmid}/status/shutdown"].post "", @auth_params do |response, request, result, &block|
+        JSON.parse(response.body)['data']
+      end
+    end
+
     def task_status(upid)
       @site["nodes/#{@node}/tasks/#{URI::encode upid}/status"].get @auth_params do |response, request, result, &block|
         status = JSON.parse(response.body)['data']['status']
