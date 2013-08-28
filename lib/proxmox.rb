@@ -31,7 +31,7 @@ module Proxmox
               :CSRFPreventionToken => csrf_prevention_token,
               :cookie => token
             }
-          elsif response.code == 200
+          else
             @status = "error"
           end
         end
@@ -67,22 +67,20 @@ module Proxmox
 
       @site["nodes/#{@node}/openvz"].post "#{vm_definition}", @auth_params do |response, request, result, &block|
         if (response.code == 200) then
-          result = "OK"
+          JSON.parse(response.body)['data']
         else
-          result = "NOK: error code = " + response.code.to_s
+          "NOK: error code = " + response.code.to_s
         end
-        JSON.parse(response.body)['data']
       end
     end
 
     def openvz_delete(vmid)
       @site["nodes/#{@node}/openvz/#{vmid}"].delete @auth_params do |response, request, result, &block|
         if (response.code == 200) then
-          result = "OK"
+          JSON.parse(response.body)['data']
         else
-          result = "NOK: error code = " + response.code.to_s
+          "NOK: error code = " + response.code.to_s
         end
-        JSON.parse(response.body)['data']
       end
     end
 

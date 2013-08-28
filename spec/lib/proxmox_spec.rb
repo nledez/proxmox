@@ -139,8 +139,26 @@ describe Proxmox do
       :body => '{"data":"UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"}'
     )
 
+    stub_request(:post, "http://localhost:8006/api2/json/nodes/localhost/openvz").with(
+      :body => "vmid=201&ostemplate=local%3Avztmpl%2Fubuntu-10.04-standard_10.04-4_i386.tar.gz",
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 500,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => 'NOK: error code = 500'
+    )
+
     #Create the vm
     @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200).should be_eql "UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
+    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 201).should be_eql "NOK: error code = 500"
   end
 
   it "should delete openvz container" do
@@ -161,8 +179,25 @@ describe Proxmox do
       :body => '{"data":"UPID:localhost:0005C1EB:11BAA4EB:521D12B8:vzdestroy:200:root@pam:"}'
     )
 
+    stub_request(:delete, "http://localhost:8006/api2/json/nodes/localhost/openvz/201").with(
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 500,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => 'NOK: error code = 500'
+    )
+
     # Delete the vm
     @server1.openvz_delete(200).should be_eql 'UPID:localhost:0005C1EB:11BAA4EB:521D12B8:vzdestroy:200:root@pam:'
+    @server1.openvz_delete(201).should be_eql 'NOK: error code = 500'
   end
 
   it "should get task status" do
