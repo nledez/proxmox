@@ -89,44 +89,46 @@ module Proxmox
       end
     end
 
-    def openvz_vm_action_post(action, vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}/status/#{action}"].post "", @auth_params do |response, request, result, &block|
-        JSON.parse(response.body)['data']
-      end
-    end
-
-    def openvz_vm_action_get(action, vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}/status/#{action}"].get @auth_params do |response, request, result, &block|
-        JSON.parse(response.body)['data']
-      end
-    end
-
-    def openvz_delete(vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}"].delete @auth_params do |response, request, result, &block|
+    def openvz_vm_action_post(url)
+      @site[url].post "", @auth_params do |response, request, result, &block|
         check_response response
       end
     end
 
+    def openvz_vm_action_get(url)
+      @site[url].get @auth_params do |response, request, result, &block|
+        check_response response
+      end
+    end
+
+    def openvz_vm_action_delete(url)
+      @site[url].delete @auth_params do |response, request, result, &block|
+        check_response response
+      end
+    end
+
+    def openvz_delete(vmid)
+      openvz_vm_action_delete "nodes/#{@node}/openvz/#{vmid}"
+    end
+
     def openvz_vm_status(vmid)
-      openvz_vm_action_get("current", vmid)
+      openvz_vm_action_get "nodes/#{@node}/openvz/#{vmid}/status/current"
     end
 
     def openvz_vm_start(vmid)
-      openvz_vm_action_post("start", vmid)
+      openvz_vm_action_post "nodes/#{@node}/openvz/#{vmid}/status/start"
     end
 
     def openvz_vm_stop(vmid)
-      openvz_vm_action_post("stop", vmid)
+      openvz_vm_action_post "nodes/#{@node}/openvz/#{vmid}/status/stop"
     end
 
     def openvz_vm_shutdown(vmid)
-      openvz_vm_action_post("shutdown", vmid)
+      openvz_vm_action_post "nodes/#{@node}/openvz/#{vmid}/status/shutdown"
     end
 
     def openvz_vm_config(vmid)
-      @site["nodes/#{@node}/openvz/#{vmid}/config"].get @auth_params do |response, request, result, &block|
-        JSON.parse(response.body)['data']
-      end
+      openvz_vm_action_get "nodes/#{@node}/openvz/#{vmid}/config"
     end
   end
 end
