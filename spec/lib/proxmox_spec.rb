@@ -55,6 +55,28 @@ describe Proxmox do
     server2.status.should == "error"
   end
 
+  it "should get template list" do
+    # First template list
+    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/storage/local/content").with(
+      :headers => {
+        'User-Agent' => 'Ruby',
+        'Cookie' => /.*/,
+        'Csrfpreventiontoken' => /.*/
+      }
+    ).to_return(
+      :status => 200,
+      :headers => {
+        :connection => "close",
+        :server => "pve-api-daemon/3.0",
+        :content_type => "application/json;charset=UTF-8",
+      },
+      :body => '{"data":[{"format":"tgz","content":"vztmpl","volid":"local:vztmpl/ubuntu-10.04-standard_10.04-4_i386.tar.gz","size":142126884},{"format":"tgz","content":"vztmpl","volid":"local:vztmpl/ubuntu-12.04-standard_12.04-1_i386.tar.gz","size":130040792}]}'
+    )
+
+    @server1.templates.should be_an_instance_of Hash
+    @server1.templates.keys.sort.should be_eql [ 'ubuntu-10.04-standard_10.04-4_i386', 'ubuntu-12.04-standard_12.04-1_i386' ]
+  end
+
   it "should get openvz vm list" do
     # First VM list
     stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/openvz").with(
@@ -259,27 +281,5 @@ describe Proxmox do
     @server1.openvz_vm_start(200)
     @server1.openvz_vm_stop(200)
     @server1.openvz_vm_shutdown(200)
-  end
-
-  it "should get template list" do
-    # First template list
-    stub_request(:get, "http://localhost:8006/api2/json/nodes/localhost/storage/local/content").with(
-      :headers => {
-        'User-Agent' => 'Ruby',
-        'Cookie' => /.*/,
-        'Csrfpreventiontoken' => /.*/
-      }
-    ).to_return(
-      :status => 200,
-      :headers => {
-        :connection => "close",
-        :server => "pve-api-daemon/3.0",
-        :content_type => "application/json;charset=UTF-8",
-      },
-      :body => '{"data":[{"format":"tgz","content":"vztmpl","volid":"local:vztmpl/ubuntu-10.04-standard_10.04-4_i386.tar.gz","size":142126884},{"format":"tgz","content":"vztmpl","volid":"local:vztmpl/ubuntu-12.04-standard_12.04-1_i386.tar.gz","size":130040792}]}'
-    )
-
-    @server1.templates.should be_an_instance_of Hash
-    @server1.templates.keys.sort.should be_eql [ 'ubuntu-10.04-standard_10.04-4_i386', 'ubuntu-12.04-standard_12.04-1_i386' ]
   end
 end

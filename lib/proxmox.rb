@@ -38,6 +38,17 @@ module Proxmox
       end
     end
 
+    def templates
+      @site["nodes/#{@node}/storage/local/content"].get @auth_params do |response, request, result, &block|
+        template_list = Hash.new
+        JSON.parse(response.body)['data'].each do |ve|
+          name = ve['volid'].gsub(/^local:vztmpl\/(.*).tar.gz$/, '\1')
+          template_list[name] = ve
+        end
+        template_list
+      end
+    end
+
     def openvz_get
       @site["nodes/#{@node}/openvz"].get @auth_params do |response, request, result, &block|
         ve_list = Hash.new
@@ -108,17 +119,6 @@ module Proxmox
         else
           "#{status}"
         end
-      end
-    end
-
-    def templates
-      @site["nodes/#{@node}/storage/local/content"].get @auth_params do |response, request, result, &block|
-        template_list = Hash.new
-        JSON.parse(response.body)['data'].each do |ve|
-          name = ve['volid'].gsub(/^local:vztmpl\/(.*).tar.gz$/, '\1')
-          template_list[name] = ve
-        end
-        template_list
       end
     end
   end
