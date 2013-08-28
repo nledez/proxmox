@@ -1,4 +1,6 @@
 require "proxmox/version"
+require "proxmox/auth"
+require "proxmox/http"
 require 'rest_client'
 require 'json'
 
@@ -15,31 +17,6 @@ module Proxmox
       @status = "error"
       @site = RestClient::Resource.new(@pve_cluster)
       @auth_params = create_ticket
-    end
-
-    def create_ticket
-        post_param = { :username=>@username, :realm=>@realm, :password=>@password }
-        @site['access/ticket'].post post_param do |response, request, result, &block|
-          if response.code == 200
-            extract_ticket response
-          else
-            @status = "error"
-          end
-        end
-    end
-
-    def extract_ticket(response)
-      data = JSON.parse(response.body)
-      ticket = data['data']['ticket']
-      csrf_prevention_token = data['data']['CSRFPreventionToken']
-      unless ticket.nil?
-        token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
-      end
-      @status = "connected"
-      {
-        :CSRFPreventionToken => csrf_prevention_token,
-        :cookie => token
-      }
     end
 
     def task_status(upid)
@@ -109,24 +86,6 @@ module Proxmox
         JSON.parse(response.body)['data']
       else
         "NOK: error code = " + response.code.to_s
-      end
-    end
-
-    def http_action_post(url, data = "")
-      @site[url].post data, @auth_params do |response, request, result, &block|
-        check_response response
-      end
-    end
-
-    def http_action_get(url)
-      @site[url].get @auth_params do |response, request, result, &block|
-        check_response response
-      end
-    end
-
-    def http_action_delete(url)
-      @site[url].delete @auth_params do |response, request, result, &block|
-        check_response response
       end
     end
   end
