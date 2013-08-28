@@ -14,7 +14,10 @@ module Proxmox
       @realm = realm
       @status = "error"
       @site = RestClient::Resource.new(@pve_cluster)
-      @auth_params ||= begin
+      @auth_params = create_ticket
+    end
+
+    def create_ticket
         ticket = nil
         csrf_prevention_token = nil
         post_param = { :username=>@username, :realm=>@realm, :password=>@password }
@@ -35,7 +38,6 @@ module Proxmox
             @status = "error"
           end
         end
-      end
     end
 
     def task_status(upid)
