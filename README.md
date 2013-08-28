@@ -2,6 +2,12 @@
 
 You need to manage a proxmox host with Ruby? This library is for you.
 
+Current build:
+[![Build Status](https://travis-ci.org/nledez/proxmox.png)](https://travis-ci.org/nledez/proxmox)
+[![Coverage Status](https://coveralls.io/repos/nledez/proxmox/badge.png)](https://coveralls.io/r/nledez/proxmox)
+[![Dependency Status](https://gemnasium.com/nledez/proxmox.png)](https://gemnasium.com/nledez/proxmox)
+[![Code Climate](https://codeclimate.com/github/nledez/proxmox.png)](https://codeclimate.com/github/nledez/proxmox)
+
 Inspirated from:
 https://bitbucket.org/jmoratilla/knife-proxmox/ but I would like to have
 the same without chef.
