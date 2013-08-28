@@ -313,8 +313,8 @@ describe Proxmox do
       :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"}'
     )
 
-    @server1.openvz_vm_start(200)
-    @server1.openvz_vm_stop(200)
-    @server1.openvz_vm_shutdown(200)
+    @server1.openvz_vm_start(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstart:200:root@pam:"
+    @server1.openvz_vm_stop(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:"
+    @server1.openvz_vm_shutdown(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"
   end
 end
