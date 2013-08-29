@@ -11,6 +11,10 @@ group :developpement do
   gem "growl"
   gem "spork"
   gem "guard-spork"
+
+  gem "yard"
+  gem "redcarpet"
+  gem "guard-yard"
 end
 
 group :test do

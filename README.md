@@ -2,6 +2,8 @@
 
 You need to manage a proxmox host with Ruby? This library is for you.
 
+!!! Warning, it's a experimental version. Some methods could be renamed !!!
+
 Current build:
 [![Build Status](https://travis-ci.org/nledez/proxmox.png)](https://travis-ci.org/nledez/proxmox)
 [![Coverage Status](https://coveralls.io/repos/nledez/proxmox/badge.png)](https://coveralls.io/r/nledez/proxmox)
@@ -76,9 +78,9 @@ Or install it yourself as:
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Create spec
-4. Write your code
-5. Check spec & coverage
+3. Create spec (in file spec/lib/proxmox_spec.rb)
+4. Write your code (in lib/proxmox.rb)
+5. Check spec & coverage (`bundle exec rspec` or `bundle exec guard`)
 6. Commit your changes (`git commit -am 'Add some feature'`)
 7. Push to the branch (`git push origin my-new-feature`)
 8. Create new Pull Request

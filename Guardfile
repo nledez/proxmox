@@ -12,3 +12,8 @@ guard :rspec do
   watch('spec/spec_helper.rb')  { "spec" }
 end
 
+group :docs do
+  guard 'yard' do
+    watch(%r{lib/.+\.rb})
+  end
+end
