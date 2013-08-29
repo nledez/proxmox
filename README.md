@@ -10,15 +10,19 @@ Current build:
 [![Dependency Status](https://gemnasium.com/nledez/proxmox.png)](https://gemnasium.com/nledez/proxmox)
 [![Code Climate](https://codeclimate.com/github/nledez/proxmox.png)](https://codeclimate.com/github/nledez/proxmox)
 
-[![RubyGem]](http://rubygems.org/gems/proxmox)
+[RubyGem](http://rubygems.org/gems/proxmox)
 
-[![Rubydoc]](http://rubydoc.info/github/nledez/proxmox/master/frames)
+[Rubydoc](http://rubydoc.info/github/nledez/proxmox/master/frames)
 
 Inspirated from:
 https://bitbucket.org/jmoratilla/knife-proxmox/ but I would like to have
 the same without chef.
 https://github.com/maxschulze/uv_proxmox but listing some task does not
 work for me. No tests, use ssh.
+
+Documentation from:
+- http://pve.proxmox.com/wiki/Proxmox_VE_API
+- http://pve.proxmox.com/pve2-api-doc/
 
 So I start to create one fully tested (TDD method).
 
