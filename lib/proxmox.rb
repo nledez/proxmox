@@ -4,7 +4,7 @@ require 'json'
 
 module Proxmox
   class Proxmox
-    attr_reader :status
+    attr_reader :connection_status
 
     def initialize(pve_cluster, node, username, password, realm)
       @pve_cluster = pve_cluster
@@ -12,7 +12,7 @@ module Proxmox
       @username = username
       @password = password
       @realm = realm
-      @status = "error"
+      @connection_status = "error"
       @site = RestClient::Resource.new(@pve_cluster)
       @auth_params = create_ticket
     end
@@ -86,7 +86,7 @@ module Proxmox
           if response.code == 200
             extract_ticket response
           else
-            @status = "error"
+            @connection_status = "error"
           end
         end
     end
@@ -98,7 +98,7 @@ module Proxmox
       unless ticket.nil?
         token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
       end
-      @status = "connected"
+      @connection_status = "connected"
       {
         :CSRFPreventionToken => csrf_prevention_token,
         :cookie => token

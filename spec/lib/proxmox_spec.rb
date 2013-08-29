@@ -48,10 +48,10 @@ describe Proxmox do
       :headers => @common_headers_out,
       :body => '{"data":null}'
     )
-    @server1.status.should == "connected"
+    @server1.connection_status.should == "connected"
 
     server2 = Proxmox::Proxmox.new("http://localhost:8006/api2/json/", "localhost", "root", "bad", "pam")
-    server2.status.should == "error"
+    server2.connection_status.should == "error"
   end
 
   it "should get task status" do
