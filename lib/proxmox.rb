@@ -17,31 +17,6 @@ module Proxmox
       @auth_params = create_ticket
     end
 
-    def create_ticket
-        post_param = { :username=>@username, :realm=>@realm, :password=>@password }
-        @site['access/ticket'].post post_param do |response, request, result, &block|
-          if response.code == 200
-            extract_ticket response
-          else
-            @status = "error"
-          end
-        end
-    end
-
-    def extract_ticket(response)
-      data = JSON.parse(response.body)
-      ticket = data['data']['ticket']
-      csrf_prevention_token = data['data']['CSRFPreventionToken']
-      unless ticket.nil?
-        token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
-      end
-      @status = "connected"
-      {
-        :CSRFPreventionToken => csrf_prevention_token,
-        :cookie => token
-      }
-    end
-
     def task_status(upid)
       data = http_action_get "nodes/#{@node}/tasks/#{URI::encode upid}/status"
       status = data['status']
@@ -102,6 +77,32 @@ module Proxmox
 
     def openvz_config(vmid)
       http_action_get "nodes/#{@node}/openvz/#{vmid}/config"
+    end
+
+    private
+    def create_ticket
+        post_param = { :username=>@username, :realm=>@realm, :password=>@password }
+        @site['access/ticket'].post post_param do |response, request, result, &block|
+          if response.code == 200
+            extract_ticket response
+          else
+            @status = "error"
+          end
+        end
+    end
+
+    def extract_ticket(response)
+      data = JSON.parse(response.body)
+      ticket = data['data']['ticket']
+      csrf_prevention_token = data['data']['CSRFPreventionToken']
+      unless ticket.nil?
+        token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
+      end
+      @status = "connected"
+      {
+        :CSRFPreventionToken => csrf_prevention_token,
+        :cookie => token
+      }
     end
 
     def check_response(response)
