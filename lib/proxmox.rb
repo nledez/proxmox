@@ -84,23 +84,23 @@ module Proxmox
       http_action_delete "nodes/#{@node}/openvz/#{vmid}"
     end
 
-    def openvz_vm_status(vmid)
+    def openvz_status(vmid)
       http_action_get "nodes/#{@node}/openvz/#{vmid}/status/current"
     end
 
-    def openvz_vm_start(vmid)
+    def openvz_start(vmid)
       http_action_post "nodes/#{@node}/openvz/#{vmid}/status/start"
     end
 
-    def openvz_vm_stop(vmid)
+    def openvz_stop(vmid)
       http_action_post "nodes/#{@node}/openvz/#{vmid}/status/stop"
     end
 
-    def openvz_vm_shutdown(vmid)
+    def openvz_shutdown(vmid)
       http_action_post "nodes/#{@node}/openvz/#{vmid}/status/shutdown"
     end
 
-    def openvz_vm_config(vmid)
+    def openvz_config(vmid)
       http_action_get "nodes/#{@node}/openvz/#{vmid}/config"
     end
 

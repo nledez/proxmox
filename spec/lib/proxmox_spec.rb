@@ -178,9 +178,9 @@ describe Proxmox do
       :body => '{"data":{"maxswap":268435456,"disk":0,"ip":"-","status":"stopped","ha":0,"netout":0,"maxdisk":9.44473296573929e+21,"maxmem":268435456,"uptime":0,"swap":0,"nproc":0,"diskread":0,"cpu":0,"netin":0,"name":"CT200","failcnt":0,"diskwrite":0,"mem":0,"type":"openvz","cpus":1}}'
     )
 
-    @server1.openvz_vm_status(200).should be_an_instance_of Hash
-    @server1.openvz_vm_status(200)['status'].should be_eql "stopped"
-    @server1.openvz_vm_status(200)['cpus'].should be_eql 1
+    @server1.openvz_status(200).should be_an_instance_of Hash
+    @server1.openvz_status(200)['status'].should be_eql "stopped"
+    @server1.openvz_status(200)['cpus'].should be_eql 1
   end
 
   it "should start & stop vm" do
@@ -206,9 +206,9 @@ describe Proxmox do
       :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"}'
     )
 
-    @server1.openvz_vm_start(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstart:200:root@pam:"
-    @server1.openvz_vm_stop(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:"
-    @server1.openvz_vm_shutdown(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"
+    @server1.openvz_start(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstart:200:root@pam:"
+    @server1.openvz_stop(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:"
+    @server1.openvz_shutdown(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"
   end
 
   it "should get container config" do
@@ -220,8 +220,8 @@ describe Proxmox do
       :body => '{"data":{"quotaugidlimit":0,"disk":0,"ostemplate":"ubuntu-10.04-standard_10.04-4_i386.tar.gz","nameserver":"127.0.0.1 192.168.1.1","memory":256,"searchdomain":"domain.com","onboot":0,"cpuunits":1000,"swap":256,"quotatime":0,"digest":"5a6f4052d559d3ecc89c849214f482217018a07e","cpus":1,"storage":"local"}}'
     )
 
-    @server1.openvz_vm_config(200).should be_an_instance_of Hash
-    @server1.openvz_vm_config(200)['searchdomain'].should be_eql "domain.com"
-    @server1.openvz_vm_config(200)['ostemplate'].should be_eql "ubuntu-10.04-standard_10.04-4_i386.tar.gz"
+    @server1.openvz_config(200).should be_an_instance_of Hash
+    @server1.openvz_config(200)['searchdomain'].should be_eql "domain.com"
+    @server1.openvz_config(200)['ostemplate'].should be_eql "ubuntu-10.04-standard_10.04-4_i386.tar.gz"
   end
 end
