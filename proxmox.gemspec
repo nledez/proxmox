@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["github@ledez.net"]
   spec.description   = %q{A library to drive a Proxmox host}
   spec.summary       = %q{You need to manage a proxmox host with Ruby? This library is for you.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/nledez/proxmox"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

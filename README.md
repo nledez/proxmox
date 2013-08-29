@@ -10,6 +10,10 @@ Current build:
 [![Dependency Status](https://gemnasium.com/nledez/proxmox.png)](https://gemnasium.com/nledez/proxmox)
 [![Code Climate](https://codeclimate.com/github/nledez/proxmox.png)](https://codeclimate.com/github/nledez/proxmox)
 
+[![RubyGem]](http://rubygems.org/gems/proxmox)
+
+[![Rubydoc]](http://rubydoc.info/github/nledez/proxmox/master/frames)
+
 Inspirated from:
 https://bitbucket.org/jmoratilla/knife-proxmox/ but I would like to have
 the same without chef.
