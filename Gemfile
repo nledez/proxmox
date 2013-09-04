@@ -8,7 +8,10 @@ group :developpement do
   gem "guard-rspec"
   gem "guard-bundler"
 
-  gem "growl"
+  gem "growl" if RUBY_PLATFORM =~ /darwin/
+  gem "wdm" if RUBY_PLATFORM =~ /mingw/
+  gem "ruby_gntp" if RUBY_PLATFORM =~ /mingw/
+
   gem "spork"
   gem "guard-spork"
 
