@@ -1,4 +1,4 @@
-require "proxmox/version"
+require 'proxmox/version'
 require 'rest_client'
 require 'json'
 
@@ -26,7 +26,7 @@ module Proxmox
       @username = username
       @password = password
       @realm = realm
-      @connection_status = "error"
+      @connection_status = 'error'
       @site = RestClient::Resource.new(@pve_cluster)
       @auth_params = create_ticket
     end
@@ -88,7 +88,7 @@ module Proxmox
     #
     def templates
       data = http_action_get "nodes/#{@node}/storage/local/content"
-      template_list = Hash.new
+      template_list = {}
       data.each do |ve|
         name = ve['volid'].gsub(/^local:vztmpl\/(.*).tar.gz$/, '\1')
         template_list[name] = ve
@@ -135,7 +135,7 @@ module Proxmox
     #   }
     def openvz_get
       data = http_action_get "nodes/#{@node}/openvz"
-      ve_list = Hash.new
+      ve_list = {}
       data.each do |ve|
         ve_list[ve['vmid']] = ve
       end
@@ -297,16 +297,17 @@ module Proxmox
     end
 
     private
+
     # Methods manages auth
     def create_ticket
-        post_param = { :username=>@username, :realm=>@realm, :password=>@password }
-        @site['access/ticket'].post post_param do |response, request, result, &block|
-          if response.code == 200
-            extract_ticket response
-          else
-            @connection_status = "error"
-          end
+      post_param = { :username => @username, :realm => @realm, :password => @password }
+      @site['access/ticket'].post post_param do |response, request, result, &block|
+        if response.code == 200
+          extract_ticket response
+        else
+          @connection_status = "error"
         end
+      end
     end
 
     # Method create ticket
