@@ -296,6 +296,10 @@ module Proxmox
       http_action_get "nodes/#{@node}/openvz/#{vmid}/config"
     end
 
+    def openvz_config_set(vmid, data)
+      http_action_put("nodes/#{@node}/openvz/#{vmid}/config", data)
+    end
+
     private
 
     # Methods manages auth
@@ -337,6 +341,12 @@ module Proxmox
     # Methods manage http dialogs
     def http_action_post(url, data = "")
       @site[url].post data, @auth_params do |response, request, result, &block|
+        check_response response
+      end
+    end
+
+    def http_action_put(url, data = "")
+      @site[url].put data, @auth_params do |response, request, result, &block|
         check_response response
       end
     end

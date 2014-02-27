@@ -224,4 +224,16 @@ describe Proxmox do
     @server1.openvz_config(200)['searchdomain'].should be_eql "domain.com"
     @server1.openvz_config(200)['ostemplate'].should be_eql "ubuntu-10.04-standard_10.04-4_i386.tar.gz"
   end
+
+  it "should modify container config" do
+    # VM config
+    stub_request(:put, "http://localhost:8006/api2/json/nodes/localhost/openvz/200/config").with(
+      :headers => @common_headers_in).to_return(
+      :status => 200,
+      :headers => @common_headers_out,
+      :body => '{"data":null}'
+    )
+
+    @server1.openvz_config_set(200, { 'searchdomain' => 'other.com' })
+  end
 end
