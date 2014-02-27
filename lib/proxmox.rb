@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'proxmox/version'
 require 'rest_client'
 require 'json'
@@ -18,7 +20,7 @@ module Proxmox
     #
     # Example:
     #
-    #   Proxmox::Proxmox.new("https://the-proxmox-server:8006/api2/json/", "node", "root", "secret", "pam")
+    #   Proxmox::Proxmox.new('https://the-proxmox-server:8006/api2/json/', 'node', 'root', 'secret', 'pam')
     #
     def initialize(pve_cluster, node, username, password, realm)
       @pve_cluster = pve_cluster
@@ -41,7 +43,7 @@ module Proxmox
     #
     # Example:
     #
-    #   taskstatus "UPID:localhost:00051DA0:119EAABC:521CCB19:vzcreate:203:root@pam:"
+    #   taskstatus 'UPID:localhost:00051DA0:119EAABC:521CCB19:vzcreate:203:root@pam:'
     #
     # Examples return:
     #   - running
@@ -72,17 +74,17 @@ module Proxmox
     # Example return:
     #
     #   {
-    #     "ubuntu-10.04-standard_10.04-4_i386" => {
-    #         "format" => "tgz",
-    #         "content" => "vztmpl",
-    #         "volid" => "local:vztmpl/ubuntu-10.04-standard_10.04-4_i386.tar.gz",
-    #         "size" => 142126884
+    #     'ubuntu-10.04-standard_10.04-4_i386' => {
+    #         'format' => 'tgz',
+    #         'content' => 'vztmpl',
+    #         'volid' => 'local:vztmpl/ubuntu-10.04-standard_10.04-4_i386.tar.gz',
+    #         'size' => 142126884
     #     },
-    #     "ubuntu-12.04-standard_12.04-1_i386" => {
-    #         "format" => "tgz",
-    #         "content" => "vztmpl",
-    #         "volid" => "local:vztmpl/ubuntu-12.04-standard_12.04-1_i386.tar.gz",
-    #          "size" => 130040792
+    #     'ubuntu-12.04-standard_12.04-1_i386' => {
+    #         'format' => 'tgz',
+    #         'content' => 'vztmpl',
+    #         'volid' => 'local:vztmpl/ubuntu-12.04-standard_12.04-1_i386.tar.gz',
+    #          'size' => 130040792
     #     }
     #  }
     #
@@ -109,27 +111,27 @@ module Proxmox
     #
     # Example return:
     #   {
-    #     "101" => {
-    #           "maxswap" => 536870912,
-    #           "disk" => 405168128,
-    #           "ip" => "192.168.1.5",
-    #           "status" => "running",
-    #           "netout" => 272,
-    #           "maxdisk" => 4294967296,
-    #           "maxmem" => 536870912,
-    #           "uptime" => 3068073,
-    #           "swap" => 0,
-    #           "vmid" => "101",
-    #           "nproc" => "10",
-    #           "diskread" => 0,
-    #           "cpu" => 0.00031670581100007,
-    #           "netin" => 0,
-    #           "name" => "test2.domain.com",
-    #           "failcnt" => 0,
-    #           "diskwrite" => 0,
-    #           "mem" => 22487040,
-    #           "type" => "openvz",
-    #           "cpus" => 1
+    #     '101' => {
+    #           'maxswap' => 536870912,
+    #           'disk' => 405168128,
+    #           'ip' => '192.168.1.5',
+    #           'status' => 'running',
+    #           'netout' => 272,
+    #           'maxdisk' => 4294967296,
+    #           'maxmem' => 536870912,
+    #           'uptime' => 3068073,
+    #           'swap' => 0,
+    #           'vmid' => '101',
+    #           'nproc' => '10',
+    #           'diskread' => 0,
+    #           'cpu' => 0.00031670581100007,
+    #           'netin' => 0,
+    #           'name' => 'test2.domain.com',
+    #           'failcnt' => 0,
+    #           'diskwrite' => 0,
+    #           'mem' => 22487040,
+    #           'type' => 'openvz',
+    #           'cpus' => 1
     #     },
     #     [...]
     #   }
@@ -152,8 +154,8 @@ module Proxmox
     #
     # Examples:
     #
-    #   openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200)
-    #   openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200, {'hostname' => 'test.test.com', 'password' => 'testt' })
+    #   openvz_post('ubuntu-10.04-standard_10.04-4_i386', 200)
+    #   openvz_post('ubuntu-10.04-standard_10.04-4_i386', 200, {'hostname' => 'test.test.com', 'password' => 'testt' })
     #
     # Example return:
     #
@@ -276,20 +278,20 @@ module Proxmox
     # Example return:
     #
     #   {
-    #     "quotaugidlimit" => 0,
-    #     "disk" => 0,
-    #     "ostemplate" => "ubuntu-10.04-standard_10.04-4_i386.tar.gz",
-    #     "hostname" => "test.test.com",
-    #     "nameserver" => "127.0.0.1 192.168.1.1",
-    #     "memory" => 256,
-    #     "searchdomain" => "domain.com",
-    #     "onboot" => 0,
-    #     "cpuunits" => 1000,
-    #     "swap" => 256,
-    #     "quotatime" => 0,
-    #     "digest" => "e7e6e21a215af6b9da87a8ecb934956b8983f960",
-    #     "cpus" => 1,
-    #     "storage" => "local"
+    #     'quotaugidlimit' => 0,
+    #     'disk' => 0,
+    #     'ostemplate' => 'ubuntu-10.04-standard_10.04-4_i386.tar.gz',
+    #     'hostname' => 'test.test.com',
+    #     'nameserver' => '127.0.0.1 192.168.1.1',
+    #     'memory' => 256,
+    #     'searchdomain' => 'domain.com',
+    #     'onboot' => 0,
+    #     'cpuunits' => 1000,
+    #     'swap' => 256,
+    #     'quotatime' => 0,
+    #     'digest' => 'e7e6e21a215af6b9da87a8ecb934956b8983f960',
+    #     'cpus' => 1,
+    #     'storage' => 'local'
     #   }
     #
     def openvz_config(vmid)
@@ -304,12 +306,12 @@ module Proxmox
 
     # Methods manages auth
     def create_ticket
-      post_param = { :username => @username, :realm => @realm, :password => @password }
+      post_param = { username: @username, realm: @realm, password: @password }
       @site['access/ticket'].post post_param do |response, request, result, &block|
         if response.code == 200
           extract_ticket response
         else
-          @connection_status = "error"
+          @connection_status = 'error'
         end
       end
     end
@@ -320,32 +322,32 @@ module Proxmox
       ticket = data['data']['ticket']
       csrf_prevention_token = data['data']['CSRFPreventionToken']
       unless ticket.nil?
-        token = 'PVEAuthCookie=' + ticket.gsub!(/:/,'%3A').gsub!(/=/,'%3D')
+        token = 'PVEAuthCookie=' + ticket.gsub!(/:/, '%3A').gsub!(/=/, '%3D')
       end
-      @connection_status = "connected"
+      @connection_status = 'connected'
       {
-        :CSRFPreventionToken => csrf_prevention_token,
-        :cookie => token
+        CSRFPreventionToken: csrf_prevention_token,
+        cookie: token
       }
     end
 
     # Extract data or return error
     def check_response(response)
-      if (response.code == 200) then
+      if response.code == 200
         JSON.parse(response.body)['data']
       else
-        "NOK: error code = " + response.code.to_s
+        'NOK: error code = ' + response.code.to_s
       end
     end
 
     # Methods manage http dialogs
-    def http_action_post(url, data = "")
+    def http_action_post(url, data = '')
       @site[url].post data, @auth_params do |response, request, result, &block|
         check_response response
       end
     end
 
-    def http_action_put(url, data = "")
+    def http_action_put(url, data = '')
       @site[url].put data, @auth_params do |response, request, result, &block|
         check_response response
       end
