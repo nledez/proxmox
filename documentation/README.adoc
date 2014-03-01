@@ -1,0 +1,8 @@
+= README
+Nicolas Ledez <github.public@ledez.net>
+
+Extract http://pve.proxmox.com/pve2-api-doc/apidoc.js from http://pve.proxmox.com/pve2-api-doc/
+
+Create a script (api-js-2-adoc.rb) to extract paths & verb from json
+
+Update manually api.adoc to check witch functions was implemented
