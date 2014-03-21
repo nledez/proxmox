@@ -9,6 +9,7 @@ Current build:
 [![Coverage Status](https://coveralls.io/repos/nledez/proxmox/badge.png)](https://coveralls.io/r/nledez/proxmox)
 [![Dependency Status](https://gemnasium.com/nledez/proxmox.png)](https://gemnasium.com/nledez/proxmox)
 [![Code Climate](https://codeclimate.com/github/nledez/proxmox.png)](https://codeclimate.com/github/nledez/proxmox)
+[![Inline docs](http://inch-pages.github.io/github/nledez/proxmox.png)](http://inch-pages.github.io/github/nledez/proxmox)
 
 [RubyGem](http://rubygems.org/gems/proxmox)
 
