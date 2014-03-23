@@ -298,6 +298,21 @@ module Proxmox
       http_action_get "nodes/#{@node}/openvz/#{vmid}/config"
     end
 
+    # Set CT config
+    #
+    # :call-seq:
+    #   openvz_config_set(vmid, parameters) -> Nil
+    #
+    # Return nil
+    #
+    # Example:
+    #
+    #   openvz_config(200, { 'swap' => 2048 })
+    #
+    # Example return:
+    #
+    #   nil
+    #
     def openvz_config_set(vmid, data)
       http_action_put("nodes/#{@node}/openvz/#{vmid}/config", data)
     end
