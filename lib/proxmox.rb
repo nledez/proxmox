@@ -16,20 +16,21 @@ module Proxmox
     # Create a object to manage a Proxmox server through API
     #
     # :call-seq:
-    #   new(pve_cluster, node, username, password, realm) -> Proxmox
+    #   new(pve_cluster, node, username, password, realm, ssl_options) -> Proxmox
     #
     # Example:
     #
-    #   Proxmox::Proxmox.new('https://the-proxmox-server:8006/api2/json/', 'node', 'root', 'secret', 'pam')
+    #   Proxmox::Proxmox.new('https://the-proxmox-server:8006/api2/json/', 'node', 'root', 'secret', 'pam', {verify_ssl: false})
     #
-    def initialize(pve_cluster, node, username, password, realm)
+    def initialize(pve_cluster, node, username, password, realm, ssl_options)
       @pve_cluster = pve_cluster
       @node = node
       @username = username
       @password = password
       @realm = realm
+      @ssl_options = ssl_options
       @connection_status = 'error'
-      @site = RestClient::Resource.new(@pve_cluster)
+      @site = RestClient::Resource.new(@pve_cluster, @ssl_options)
       @auth_params = create_ticket
     end
 
