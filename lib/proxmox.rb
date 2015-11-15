@@ -67,7 +67,7 @@ module Proxmox
     #   - stopped:OK
     #
     def task_status(upid)
-      data = http_action_get "nodes/#{@node}/tasks/#{URI::encode upid}/status"
+      data = http_action_get "nodes/#{@node}/tasks/#{URI.encode upid}/status"
       status = data['status']
       exitstatus = data['exitstatus']
       if exitstatus
@@ -109,7 +109,7 @@ module Proxmox
       data = http_action_get "nodes/#{@node}/storage/local/content"
       template_list = {}
       data.each do |ve|
-        name = ve['volid'].gsub(/^local:vztmpl\/(.*).tar.gz$/, '\1')
+        name = ve['volid'].gsub(%r{local:vztmpl\/(.*).tar.gz}, '\1')
         template_list[name] = ve
       end
       template_list
@@ -339,7 +339,7 @@ module Proxmox
     # Methods manages auth
     def create_ticket
       post_param = { username: @username, realm: @realm, password: @password }
-      @site['access/ticket'].post post_param do |response, request, result, &block|
+      @site['access/ticket'].post post_param do |response, _request, _result, &_block|
         if response.code == 200
           extract_ticket response
         else
@@ -374,25 +374,25 @@ module Proxmox
 
     # Methods manage http dialogs
     def http_action_post(url, data = {})
-      @site[url].post data, @auth_params do |response, request, result, &block|
+      @site[url].post data, @auth_params do |response, _request, _result, &_block|
         check_response response
       end
     end
 
     def http_action_put(url, data = {})
-      @site[url].put data, @auth_params do |response, request, result, &block|
+      @site[url].put data, @auth_params do |response, _request, _result, &_block|
         check_response response
       end
     end
 
     def http_action_get(url, data = {})
-      @site[url].get @auth_params.merge(data) do |response, request, result, &block|
+      @site[url].get @auth_params.merge(data) do |response, _request, _result, &_block|
         check_response response
       end
     end
 
     def http_action_delete(url)
-      @site[url].delete @auth_params do |response, request, result, &block|
+      @site[url].delete @auth_params do |response, _request, _result, &_block|
         check_response response
       end
     end
