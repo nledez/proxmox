@@ -34,6 +34,22 @@ module Proxmox
       @auth_params = create_ticket
     end
 
+    def get(path, args = {})
+      http_action_get(path, args)
+    end
+
+    def post(path, args = {})
+      http_action_post(path, args)
+    end
+
+    def put(path, args = {})
+      http_action_put(path, args)
+    end
+
+    def delete(path)
+      http_action_delete(path)
+    end
+
     # Get task status
     #
     # :call-seq:
@@ -357,20 +373,20 @@ module Proxmox
     end
 
     # Methods manage http dialogs
-    def http_action_post(url, data = '')
+    def http_action_post(url, data = {})
       @site[url].post data, @auth_params do |response, request, result, &block|
         check_response response
       end
     end
 
-    def http_action_put(url, data = '')
+    def http_action_put(url, data = {})
       @site[url].put data, @auth_params do |response, request, result, &block|
         check_response response
       end
     end
 
-    def http_action_get(url)
-      @site[url].get @auth_params do |response, request, result, &block|
+    def http_action_get(url, data = {})
+      @site[url].get @auth_params.merge(data) do |response, request, result, &block|
         check_response response
       end
     end
