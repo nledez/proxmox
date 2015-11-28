@@ -15,7 +15,7 @@ Spork.each_run do
   end
 end
 
-if ENV["CI"]
+if ENV['CI']
   require 'coveralls'
   Coveralls.wear!
 end
