@@ -33,53 +33,55 @@ describe Proxmox do
 
   describe 'get' do
     it 'calls http_action_get' do
-      expect(@server1).to receive(:http_action_get).with("version", {})
-      @server1.get("version")
+      expect(@server1).to receive(:http_action_get).with('version', {})
+      @server1.get('version')
     end
   end
-  
+
   describe 'post' do
     it 'calls http_action_post' do
-      expect(@server1).to receive(:http_action_post).with("version", {})
-      @server1.post("version")
+      expect(@server1).to receive(:http_action_post).with('version', {})
+      @server1.post('version')
     end
   end
-  
+
   describe 'put' do
     it 'calls http_action_put' do
-      expect(@server1).to receive(:http_action_put).with("version", {})
-      @server1.put("version")
+      expect(@server1).to receive(:http_action_put).with('version', {})
+      @server1.put('version')
     end
   end
-  
+
   describe 'delete' do
     it 'calls http_action_delete' do
-      expect(@server1).to receive(:http_action_delete).with("version")
-      @server1.delete("version")
+      expect(@server1).to receive(:http_action_delete).with('version')
+      @server1.delete('version')
     end
   end
-  
-  it 'should connect to Proxmox server' do
-    # Bad auth
-    stub_request(:post, 'http://localhost:8006/api2/json/access/ticket').with(
-      headers: {
-        'Content-Type' => 'application/x-www-form-urlencoded',
-        'User-Agent' => 'Ruby'
-      },
-      body: {
-        'username' => 'root',
-        'password' => 'bad',
-        'realm' => 'pam'
-      }
-    ).to_return(
-      status: 500,
-      headers: @common_headers_out,
-      body: '{"data":null}'
-    )
-    expect(@server1.connection_status).to eq 'connected'
 
-    server2 = Proxmox::Proxmox.new('http://localhost:8006/api2/json/', 'localhost', 'root', 'bad', 'pam')
-    expect(server2.connection_status).to eq 'error'
+  describe 'initialize' do
+    it 'should connect to Proxmox server' do
+      # Bad auth
+      stub_request(:post, 'http://localhost:8006/api2/json/access/ticket').with(
+        headers: {
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'User-Agent' => 'Ruby'
+        },
+        body: {
+          'username' => 'root',
+          'password' => 'bad',
+          'realm' => 'pam'
+        }
+      ).to_return(
+        status: 500,
+        headers: @common_headers_out,
+        body: '{"data":null}'
+      )
+      expect(@server1.connection_status).to eq 'connected'
+
+      server2 = Proxmox::Proxmox.new('http://localhost:8006/api2/json/', 'localhost', 'root', 'bad', 'pam')
+      expect(server2.connection_status).to eq 'error'
+    end
   end
 
   describe 'task_status' do
@@ -235,7 +237,7 @@ describe Proxmox do
       expect(@server1.openvz_start(200)).to be_eql 'UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstart:200:root@pam:'
     end
   end
-  
+
   describe 'openvz_stop' do
     it 'should stop vm' do
       stub_request(:post, 'http://localhost:8006/api2/json/nodes/localhost/openvz/200/status/stop').with(
@@ -248,7 +250,7 @@ describe Proxmox do
       expect(@server1.openvz_stop(200)).to be_eql 'UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:'
     end
   end
-  
+
   describe 'openvz_shutdown' do
     it 'should shutdown vm' do
       stub_request(:post, 'http://localhost:8006/api2/json/nodes/localhost/openvz/200/status/shutdown').with(

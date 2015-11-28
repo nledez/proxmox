@@ -34,18 +34,49 @@ module Proxmox
       @auth_params = create_ticket
     end
 
+    # Perform an http get request to manage a Proxmox server through API
+    # http://pve.proxmox.com/pve2-api-doc/
+    #
+    # Example:
+    #
+    #   get('version')
+    #
     def get(path, args = {})
       http_action_get(path, args)
     end
 
+    # Perform an http post request to manage a Proxmox server through API
+    # http://pve.proxmox.com/pve2-api-doc/
+    #
+    #
+    # Example:
+    #
+    #   post('/nodes/pve/storage/local/content', filename: 'vm-110-disk-0.qcow2', size: '8G', vmid: 110, format: 'qcow2')
+    #
     def post(path, args = {})
       http_action_post(path, args)
     end
 
+    # Perform an http put request to manage a Proxmox server through API
+    # http://pve.proxmox.com/pve2-api-doc/
+    #
+    #
+    # Example:
+    #
+    #  put('/nodes/pve/storage/local/content/local:110/vm-110-disk-0.qcow2', size: '32G')
+    #
     def put(path, args = {})
       http_action_put(path, args)
     end
 
+    # Perform an http delete request to manage a Proxmox server through API
+    # http://pve.proxmox.com/pve2-api-doc/
+    #
+    #
+    # Example:
+    #
+    #  delete('/nodes/pve/storage/local/content/local:110/vm-110-disk-0.qcow2')
+    #
     def delete(path)
       http_action_delete(path)
     end
