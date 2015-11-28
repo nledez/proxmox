@@ -48,10 +48,10 @@ describe Proxmox do
       :headers => @common_headers_out,
       :body => '{"data":null}'
     )
-    @server1.connection_status.should == "connected"
+    expect(@server1.connection_status).to eq "connected"
 
     server2 = Proxmox::Proxmox.new("http://localhost:8006/api2/json/", "localhost", "root", "bad", "pam")
-    server2.connection_status.should == "error"
+    expect(server2.connection_status).to eq "error"
   end
 
   it "should get task status" do
@@ -73,8 +73,8 @@ describe Proxmox do
     )
 
     # Get status
-    @server1.task_status("UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:").should be_eql "stopped:OK"
-    @server1.task_status("UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:").should be_eql "running"
+    expect(@server1.task_status("UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:")).to be_eql "stopped:OK"
+    expect(@server1.task_status("UPID:localhost:00055DDA:11A99D07:521CE71F:vzcreate:200:root@pam:")).to be_eql "running"
   end
 
   it "should get template list" do
@@ -86,8 +86,8 @@ describe Proxmox do
       :body => '{"data":[{"format":"tgz","content":"vztmpl","volid":"local:vztmpl/ubuntu-10.04-standard_10.04-4_i386.tar.gz","size":142126884},{"format":"tgz","content":"vztmpl","volid":"local:vztmpl/ubuntu-12.04-standard_12.04-1_i386.tar.gz","size":130040792}]}'
     )
 
-    @server1.templates.should be_an_instance_of Hash
-    @server1.templates.keys.sort.should be_eql [ 'ubuntu-10.04-standard_10.04-4_i386', 'ubuntu-12.04-standard_12.04-1_i386' ]
+    expect(@server1.templates).to be_an_instance_of Hash
+    expect(@server1.templates.keys.sort).to be_eql [ 'ubuntu-10.04-standard_10.04-4_i386', 'ubuntu-12.04-standard_12.04-1_i386' ]
   end
 
   it "should get openvz vm list" do
@@ -107,12 +107,12 @@ describe Proxmox do
       :body => '{"data":[{"maxswap":536870912,"disk":404041728,"ip":"192.168.1.5","status":"running","netout":272,"maxdisk":4294967296,"maxmem":536870912,"uptime":6176,"swap":0,"vmid":"101","nproc":"10","diskread":0,"cpu":0.00161487378340585,"netin":0,"name":"test2.dummy.tld","failcnt":0,"diskwrite":0,"mem":21299200,"type":"openvz","cpus":1},{"maxswap":2147483648,"disk":0,"ip":"10.0.0.1","status":"stopped","netout":0,"maxdisk":10737418240,"maxmem":1073741824,"uptime":0,"swap":0,"vmid":"102","nproc":0,"diskread":0,"cpu":0,"netin":0,"name":"test3.other.domain","failcnt":0,"diskwrite":0,"mem":0,"type":"openvz","cpus":2},{"maxswap":536870912,"disk":387194880,"ip":"192.168.1.1","status":"running","netout":272,"maxdisk":4294967296,"maxmem":536870912,"uptime":19449,"swap":0,"vmid":"100","nproc":"17","diskread":0,"cpu":0.000589570582552814,"netin":0,"name":"test.dummy.tld","failcnt":0,"diskwrite":0,"mem":28282880,"type":"openvz","cpus":1}]}'
     )
 
-    @server1.openvz_get.should be_an_instance_of Hash
-    @server1.openvz_get.keys.sort.should be_eql [ '100', '101' ]
+    expect(@server1.openvz_get).to be_an_instance_of Hash
+    expect(@server1.openvz_get.keys.sort).to be_eql [ '100', '101' ]
 
     server2 = Proxmox::Proxmox.new("http://localhost:8006/api2/json/", "otherone", "root", "secret", "pam")
-    server2.openvz_get.should be_an_instance_of Hash
-    server2.openvz_get.keys.sort.should be_eql [ '100', '101', '102' ]
+    expect(server2.openvz_get).to be_an_instance_of Hash
+    expect(server2.openvz_get.keys.sort).to be_eql [ '100', '101', '102' ]
   end
 
   it "should create a container" do
@@ -143,9 +143,9 @@ describe Proxmox do
     )
 
     #Create the vm
-    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200).should be_eql "UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
-    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 203, { 'hostname' => 'vm1.domain.com', 'password' => 'secret', 'memory' => 512, 'swap' => 512, 'disk' => 4 }).should be_eql "UPID:localhost:00051DA0:119EAABC:521CCB19:vzcreate:203:root@pam:"
-    @server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 204).should be_eql "NOK: error code = 500"
+    expect(@server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 200)).to be_eql "UPID:localhost:00051DA0:119EAABB:521CCB19:vzcreate:200:root@pam:"
+    expect(@server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 203, { 'hostname' => 'vm1.domain.com', 'password' => 'secret', 'memory' => 512, 'swap' => 512, 'disk' => 4 })).to be_eql "UPID:localhost:00051DA0:119EAABC:521CCB19:vzcreate:203:root@pam:"
+    expect(@server1.openvz_post("ubuntu-10.04-standard_10.04-4_i386", 204)).to be_eql "NOK: error code = 500"
   end
 
   it "should delete openvz container" do
@@ -165,8 +165,8 @@ describe Proxmox do
     )
 
     # Delete the vm
-    @server1.openvz_delete(200).should be_eql 'UPID:localhost:0005C1EB:11BAA4EB:521D12B8:vzdestroy:200:root@pam:'
-    @server1.openvz_delete(201).should be_eql 'NOK: error code = 500'
+    expect(@server1.openvz_delete(200)).to be_eql 'UPID:localhost:0005C1EB:11BAA4EB:521D12B8:vzdestroy:200:root@pam:'
+    expect(@server1.openvz_delete(201)).to be_eql 'NOK: error code = 500'
   end
 
   it "should get container status" do
@@ -178,9 +178,9 @@ describe Proxmox do
       :body => '{"data":{"maxswap":268435456,"disk":0,"ip":"-","status":"stopped","ha":0,"netout":0,"maxdisk":9.44473296573929e+21,"maxmem":268435456,"uptime":0,"swap":0,"nproc":0,"diskread":0,"cpu":0,"netin":0,"name":"CT200","failcnt":0,"diskwrite":0,"mem":0,"type":"openvz","cpus":1}}'
     )
 
-    @server1.openvz_status(200).should be_an_instance_of Hash
-    @server1.openvz_status(200)['status'].should be_eql "stopped"
-    @server1.openvz_status(200)['cpus'].should be_eql 1
+    expect(@server1.openvz_status(200)).to be_an_instance_of Hash
+    expect(@server1.openvz_status(200)['status']).to be_eql "stopped"
+    expect(@server1.openvz_status(200)['cpus']).to be_eql 1
   end
 
   it "should start & stop vm" do
@@ -206,9 +206,9 @@ describe Proxmox do
       :body => '{"data":"UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"}'
     )
 
-    @server1.openvz_start(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstart:200:root@pam:"
-    @server1.openvz_stop(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:"
-    @server1.openvz_shutdown(200).should be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"
+    expect(@server1.openvz_start(200)).to be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstart:200:root@pam:"
+    expect(@server1.openvz_stop(200)).to be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzstop:200:root@pam:"
+    expect(@server1.openvz_shutdown(200)).to be_eql "UPID:ks311324:0005D91C:11BE5277:521D1C23:vzshutdown:200:root@pam:"
   end
 
   it "should get container config" do
@@ -220,9 +220,9 @@ describe Proxmox do
       :body => '{"data":{"quotaugidlimit":0,"disk":0,"ostemplate":"ubuntu-10.04-standard_10.04-4_i386.tar.gz","nameserver":"127.0.0.1 192.168.1.1","memory":256,"searchdomain":"domain.com","onboot":0,"cpuunits":1000,"swap":256,"quotatime":0,"digest":"5a6f4052d559d3ecc89c849214f482217018a07e","cpus":1,"storage":"local"}}'
     )
 
-    @server1.openvz_config(200).should be_an_instance_of Hash
-    @server1.openvz_config(200)['searchdomain'].should be_eql "domain.com"
-    @server1.openvz_config(200)['ostemplate'].should be_eql "ubuntu-10.04-standard_10.04-4_i386.tar.gz"
+    expect(@server1.openvz_config(200)).to be_an_instance_of Hash
+    expect(@server1.openvz_config(200)['searchdomain']).to be_eql "domain.com"
+    expect(@server1.openvz_config(200)['ostemplate']).to be_eql "ubuntu-10.04-standard_10.04-4_i386.tar.gz"
   end
 
   it "should modify container config" do
