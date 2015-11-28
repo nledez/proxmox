@@ -12,7 +12,6 @@ group :developpement do
   gem "wdm" if RUBY_PLATFORM =~ /mingw/
   gem "ruby_gntp" if RUBY_PLATFORM =~ /mingw/
 
-  gem "spork"
   gem "guard-spork"
 
   gem "yard"
@@ -21,6 +20,7 @@ group :developpement do
 end
 
 group :test do
+  gem "spork"
   gem "simplecov"
   gem "json", '~> 1.7.7'
   gem "coveralls"
