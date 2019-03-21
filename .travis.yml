@@ -4,4 +4,5 @@ bundler_args: --without developpement
 rvm:
   - 2.0.0
   - 2.1.0
+  - 2.3.8
 script: bundle exec rspec spec
