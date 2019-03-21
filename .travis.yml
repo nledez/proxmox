@@ -2,7 +2,7 @@ language: ruby
 cache: bundler
 bundler_args: --without developpement
 rvm:
-  - 2.3.8
-  - 2.4.5
-  - 2.5.5
+  - 2.3
+  - 2.4
+  - 2.5
 script: bundle exec rspec spec
